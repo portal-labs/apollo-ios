@@ -16,7 +16,7 @@ func CacheKeyForField(named fieldName: String, arguments: JSONObject) -> String 
   return argumentsKey.isEmpty ? fieldName : "\(fieldName)(\(argumentsKey))"
 }
 
-fileprivate func orderIndependentKey(for object: JSONObject) -> String {
+private func orderIndependentKey(for object: JSONObject) -> String {
   return object.sorted { $0.key < $1.key }.map {
     let value = $0.value as? AnyHashable
     switch value {
@@ -40,10 +40,16 @@ fileprivate func orderIndependentKey(for object: JSONObject) -> String {
 
 @_spi(Execution)
 extension Selection.Field {
-  public func cacheKey(with variables: GraphQLOperation.Variables?) throws -> String {
+  public func cacheKey(
+    with variables: GraphQLOperation.Variables?,
+    metadata: any SchemaMetadata.Type
+  )
+    throws -> String
+  {
     if let arguments = arguments {
       let argumentValues = try InputValue.evaluate(arguments, with: variables)
-      return CacheKeyForField(named: name, arguments: argumentValues)
+      return metadata.configuration.cacheKeyForField(named: name, arguments: argumentValues)
+        ?? CacheKeyForField(named: name, arguments: argumentValues)
     } else {
       return name
     }
