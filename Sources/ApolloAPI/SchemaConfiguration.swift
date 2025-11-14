@@ -39,4 +39,10 @@ public protocol SchemaConfiguration {
   ///     Represented as a ``ObjectData`` dictionary.
   /// - Returns: A ``CacheKeyInfo`` describing the computed cache key for the response object.
   static func cacheKeyInfo(for type: Object, object: ObjectData) -> CacheKeyInfo?
+
+  /// **PORTAL ADDITION**
+  /// This is a temporary extension point whilst we await full support for the @fieldPolicy directive
+  /// See: https://github.com/apollographql/apollo-ios/issues/3539
+  /// and: https://github.com/apollographql/apollo-ios/issues/3534
+  static func cacheKeyForField(named fieldName: String, arguments: JSONObject) -> String?
 }

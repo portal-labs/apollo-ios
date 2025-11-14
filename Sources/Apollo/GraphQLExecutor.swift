@@ -92,7 +92,7 @@ public class FieldExecutionInfo {
   
   func cacheKeyForField() throws -> String {
     guard let _cacheKeyForField else {
-      let cacheKey = try field.cacheKey(with: parentInfo.variables)
+      let cacheKey = try field.cacheKey(with: parentInfo.variables, metadata: parentInfo.schema)
       _cacheKeyForField = cacheKey
       return cacheKey
     }
@@ -112,8 +112,7 @@ public class FieldExecutionInfo {
     // If the object has it's own cache key, reset the cache path to the key,
     // rather than using the inherited cache path from the parent field.
     let cachePath: ResponsePath = {
-      if let cacheKey { return [cacheKey] }
-      else { return self.cachePath }
+      if let cacheKey { return [cacheKey] } else { return self.cachePath }
     }()
 
     let childExecutionInfo = ObjectExecutionInfo(
